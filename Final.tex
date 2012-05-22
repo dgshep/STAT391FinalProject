@@ -1,0 +1,87 @@
+%
+%  untitled
+%
+%  Created by Davis Shepherd on 2012-05-22.
+%  Copyright (c) 2012 University of Washington. All rights reserved.
+%
+\documentclass[twocolumn]{article}
+
+% Use utf-8 encoding for foreign characters
+\usepackage[utf8]{inputenc}
+
+% Setup for fullpage use
+\usepackage{fullpage}
+
+% Uncomment some of the following if you use the features
+%
+% Running Headers and footers
+%\usepackage{fancyhdr}
+
+% Multipart figures
+%\usepackage{subfigure}
+
+% More symbols
+%\usepackage{amsmath}
+%\usepackage{amssymb}
+%\usepackage{latexsym}
+
+% Surround parts of graphics with box
+\usepackage{boxedminipage}
+
+% Package for including code in the document
+\usepackage{listings}
+
+% If you want to generate a toc for each chapter (use with book)
+\usepackage{minitoc}
+
+% This is now the recommended way for checking for PDFLaTeX:
+\usepackage{ifpdf}
+
+%\newif\ifpdf
+%\ifx\pdfoutput\undefined
+%\pdffalse % we are not running PDFLaTeX
+%\else
+%\pdfoutput=1 % we are running PDFLaTeX
+%\pdftrue
+%\fi
+
+\ifpdf
+\usepackage[pdftex]{graphicx}
+\else
+\usepackage{graphicx}
+\fi
+\title{PCA}
+\author{ Davis Shepherd \and Jason Uanon \and Yukio Maeda}
+
+\date{\today}
+
+\begin{document}
+
+\ifpdf
+\DeclareGraphicsExtensions{.pdf, .jpg, .tif}
+\else
+\DeclareGraphicsExtensions{.eps, .jpg}
+\fi
+
+\maketitle
+
+
+\begin{abstract}
+    Our PCA paper on PCA and stuff.
+\end{abstract}
+
+\section{Introduction} % (fold)
+\label{sec:introduction}
+Our STAT 391 Project primarily focuses on the statistical analysis of using off-line pattern classification methods to simplify and interpret any given written number sample. Specifically, the project focuses on the implementation and analysis of using one particular method, merging the concepts of Principal Components Analysis (PCA) and Maximum Likelihood Estimation (MLE) within the context of symbol classification to uniquely identify number samples. Additionally, our project tries to determine the relative success of the given method by comparing the resulting numbers (determined by the final calculated likelihoods) with the expected number as well as comparing the likelihood ratio data with that obtained using other handwriting classifiers. 
+
+The idea of character recognition or handwriting recognition as a topic is mainly due to its increased importance within the digital world. Today, many computerized systems depend on character recognition for basic operation including computer tablet software, postal letter software, and bank check processing equipment. While they do correctly recognize symbols most of the time, it still succumbs to failure, diminishing the usefulness of these systems over a long time period. Findings of better classifiers may lead to the method's implementation and a reduction of bad symbol identifications. In addition, the idea of character recognition was motivated by its application within the field of artificial intelligence. In this case, better implementation of algorithms and distinguishing of alphanumeric features could allow for more adaptable models of automated devices, suited to identify and recognize any alphanumeric character.
+
+Handwriting recognition, or the ability to analyze and correctly identify a particular language representation from handwritten graphical marks, has been the topic of much research within the past thirty years due to its complexity and increasing algorithmic development. In contrast to the success of recognizing symbols by human eye, computer recognition software/hardware has had mixed degrees of success mainly because of the variability of each person's symbol-writing characteristics (e.g. size, position, appearance). As a result of the inconsistency of one classifier, researchers have devised numerous algorithms and methods to classify symbols, with most of them comparing current information with that extracted from pre-captured data to make a logical decision. Examples of this other than the highlighted PCA-analysis include the nearest-neighbor algorithm and greedy-point match algorithm. Also, scientists have recently used real-time factors to better determine subtle characteristics of symbols (e.g. pen velocity, stop patterns), improving the overall process by allowing segmentation of visual elements with gathered temporal information. 
+% section introduction (end)
+\section{Methods} % (fold)
+\label{sec:methods}
+
+% section methods (end)
+\bibliographystyle{plain}
+\bibliography{}
+\end{document}
