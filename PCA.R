@@ -16,7 +16,7 @@ getImageData = function(){
 	rows = readBin(to.read, integer(), endian = "big")
 	columns = readBin(to.read, integer(), endian = "big")
 	data = c()
-	for(i in seq(1, 10)){
+	for(i in seq(1, 600)){
 		for(r in seq(1, rows)) {
 			for(c in seq(1, columns)){
 				data = c(data, as.integer(readBin(to.read, raw(), 1)))
@@ -24,5 +24,5 @@ getImageData = function(){
 		}
 	}
 	out = matrix(data, ncol = rows*columns)
-	out
+	#prcomp(out, scale. = T)
 }
