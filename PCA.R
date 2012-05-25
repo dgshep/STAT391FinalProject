@@ -1,29 +1,35 @@
-getLabels = function(){
+getLabels = function(r){
 	to.read = file(file.choose(), "rb")
 	magicNumber = readBin(to.read, integer(), endian = "big")
 	records = readBin(to.read, integer(), endian = "big")
 	labels = c()
-	for(i in seq(1,records)){
+	for(i in seq(1,min(r, records))){
 		lab = readBin(to.read, raw(), 1)
 		labels = c(labels, lab)
 	}
+	close(to.read)
 	labels
 }
 getImageData = function(r){
+    print("Select Image File")
 	to.read = file(file.choose(), "rb")
-	magicNumber = readBin(to.read, integer(), endian = "big")
-	records = readBin(to.read, integer(), endian = "big")
-	rows = readBin(to.read, integer(), endian = "big")
-	columns = readBin(to.read, integer(), endian = "big")
-	data = c()
-	for(i in seq(1, min(r, records))){
-		for(r in seq(1, rows)) {
-			for(c in seq(1, columns)){
-				data = c(data, as.integer(readBin(to.read, raw(), 1)))
-			}
-		}
-	}
-	out = matrix(data, ncol = rows*columns)
+	f = scan(to.read)
+	out = matrix(f[1:(28*28*r)], nrow = r, byrow = T)
+	row.names(out) = getLabels(r)
+	out
+	# magicNumber = readBin(to.read, integer(), endian = "big")
+	#  records = readBin(to.read, integer(), endian = "big")
+	#  rows = readBin(to.read, integer(), endian = "big")
+	#  columns = readBin(to.read, integer(), endian = "big")
+	#  data = c()
+	#  for(i in seq(1, min(r, records))){
+	#      for(r in seq(1, rows)) {
+	#          for(c in seq(1, columns)){
+	#              data = c(data, as.integer(readBin(to.read, raw(), 1)))
+	#          }
+	#      }
+	#  }
+	#  close(to.read)
 	#prcomp(out, scale. = T)
 }
 toImage = function(vec, name){
@@ -32,3 +38,18 @@ toImage = function(vec, name){
     imageMat = 1 - imageMat/(max(imageMat))
     writeJPEG(imageMat, target = name)
 }
+plotComponents = function(mat, x, y){
+    xvec = mat[,x]
+    yvec = mat[,y]
+    plot(xvec, yvec, pch = "", xlab = c("Principal Component ", x), ylab = c("Principal Component ", y))
+    text(xvec, yvec, label = rownames(mat), col = strtoi(rownames(mat), base = 10) + 1)
+}
+analyze = function(dat){
+   pc = prcomp(dat)
+   newdat = pc$x
+   par(mfrow=c(1,2))
+   plotComponents(newdat, 1, 2)
+   plotComponents(dat, 736, 737)
+   pc
+}
+
