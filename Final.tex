@@ -80,6 +80,40 @@ Handwriting recognition, or the ability to analyze and correctly identify a part
 % section introduction (end)
 \section{Methods} % (fold)
 \label{sec:methods}
+Before we begin to talk about principal component analysis (PCA), we review some basic terminology and results from statistics and linear algebra.\\
+The \textbf{expected value} of a discrete data set $X$ (also called the mean) is defined as
+\begin{center}
+$\displaystyle E[X] = \mu =  \sum_{i=1}^{n}x_ip(x_i)$
+\end{center}
+For the purposes of this data analysis, we will assume that each data point is equally likely. We'll call the expected value 
+$\overline{X}$ and write
+\begin{center}
+$\displaystyle \overline{X} = \frac{\sum_{i=1}^{n}X_i}{n}$
+\end{center}
+The \textbf{variance} of a data set $X$ is defined as
+\begin{center}
+$\displaystyle Var(X) = \sigma^2 = E\left[\left(X-\mu\right)^2\right]$
+\end{center} 
+and using our above definition for the expected value, we have
+\begin{center}
+$\displaystyle \sigma^2 = 
+\frac{\sum_{i=1}^{n}(X_i - \overline{X})^2}{n-1}$
+\end{center}
+note that the numerator is $n-1$ instead of $n$ for this formula; this is called the \textbf{sample variance} and is used as an unbiased estimator of the true variance of the data.\\
+With this in mind, let $X$ and $Y$ be two identically distributed sets of data. We define the \textbf{covariance} of $X$ and $Y$ as
+\begin{center}
+$Cov(X, Y) = 
+\frac{\sum_{i=1}^{n}(X_i-\overline{X})(Y_i-\overline{Y})}{n-1}$
+\end{center}
+Now, suppose we have $m$ identically distributed random variables $X_1, \ldots, X_m$. We define the \textbf{covariance matrix} $\Sigma$ as $\Sigma_{i, j} = Cov(X_i, X_j)$. Note that this matrix is symmetric, which means that it will always have real-valued eigenvalues. These eigenvectors correspond to how the data are related; the eigenvector with the highest eigenvalue is the \emph{principal component} of the data set. By ordering the eigenvectors by eigenvalue from highest to lowest, we obtain the components in order of significance. This can be used to reduce the dimensionality of a data set by only selecting a certain amount of the highest-valued components.\\
+PCA, then, can be performed by following these steps:
+\begin{itemize}
+    \item Obtain data and subtract the mean (normalizing)
+    \item Calculate the covariance matrix
+    \item Calculate its eigenvectors and eigenvalues
+    \item Choose components and form a feature vector
+    \item Derive a new data set
+\end{itemize}
 
 % section methods (end)
 \bibliographystyle{plain}
