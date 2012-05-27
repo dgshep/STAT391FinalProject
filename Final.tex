@@ -99,21 +99,37 @@ and using our above definition for the expected value, we have
 $\displaystyle \sigma^2 = 
 \frac{\sum_{i=1}^{n}(X_i - \overline{X})^2}{n-1}$
 \end{center}
-note that the numerator is $n-1$ instead of $n$ for this formula; this is called the \textbf{sample variance} and is used as an unbiased estimator of the true variance of the data.\\
+note that the numerator is $n-1$ instead of $n$ for this formula; this is called the \textbf{sample variance} and is used as an unbiased estimator of the true variance of the data.
+
 With this in mind, let $X$ and $Y$ be two identically distributed sets of data. We define the \textbf{covariance} of $X$ and $Y$ as
 \begin{center}
 $Cov(X, Y) = 
 \frac{\sum_{i=1}^{n}(X_i-\overline{X})(Y_i-\overline{Y})}{n-1}$
 \end{center}
-Now, suppose we have $m$ identically distributed random variables $X_1, \ldots, X_m$. We define the \textbf{covariance matrix} $\Sigma$ as $\Sigma_{i, j} = Cov(X_i, X_j)$. Note that this matrix is symmetric, which means that it will always have real-valued eigenvalues. These eigenvectors correspond to how the data are related; the eigenvector with the highest eigenvalue is the \emph{principal component} of the data set. By ordering the eigenvectors by eigenvalue from highest to lowest, we obtain the components in order of significance. This can be used to reduce the dimensionality of a data set by only selecting a certain amount of the highest-valued components.\\
-PCA, then, can be performed by following these steps:
+Now, suppose we have $n$ identically distributed random variables $X_1, \ldots, X_n$. We define the \textbf{covariance matrix} $\Sigma$ as $\Sigma_{i, j} = Cov(X_i, X_j)$. Note that this matrix is symmetric, which means that it will always have real-valued eigenvalues. These eigenvectors correspond to how the data are related. Essentially, we convert a set of data into a set of orthogonal vectors (the principal compoenents), which means that they are uncorrelated with each other. By ordering the eigenvectors by eigenvalue from highest to lowest, we obtain the components in order of significance. This can be used to reduce the dimensionality of a data set by only selecting a certain amount of the highest-valued components. For example, if we start out with 100 eigenvectors/eigenvalues and we choose only the first 10, then the final data set will only have 10 dimensions.
+
+Each principal component is formed by taking the values of the elements of the eigenvalues as the weights of the linear combination. That is, if each eigenvector has the form
+$${\bf e}_{i} = \left(\begin{array}{c} e_{1i} \\ e_{2i} \\ \vdots \\ e_{ni} \end{array}\right)$$
+The the principal components are formed by:
+$$Y_1 = {\bf e}_{11}X_1 + {\bf e}_{21}X_2 + \ldots + {\bf e}_{n1}X_n$$
+$$Y_2 = {\bf e}_{12}X_1 + {\bf e}_{22}X_2 + \ldots + {\bf e}_{n2}X_n$$
+$$\vdots$$
+$$Y_n = {\bf e}_{1n}X_1 + {\bf e}_{2n}X_2 + \ldots + {\bf e}_{nn}X_n$$
+
+PCA, then, can be summarized by following these steps:
 \begin{itemize}
-    \item Obtain data and subtract the mean (normalizing)
+    \item Obtain training data and subtract the mean
     \item Calculate the covariance matrix
     \item Calculate its eigenvectors and eigenvalues
     \item Choose components and form a feature vector
     \item Derive a new data set
 \end{itemize}
+For the last bullet point, the new data set can be created by taking the transpose of the feature ector and multiply it on the left of the original data set:
+$$FinalData = RowFeatureVector \times RowDataAdjust$$
+where $RowFeatureVector$ is the matrix with the eigenvectors in the columns transposed (so tha the eigenvectors are rows, with the most significant on top) and $RowDataAdjust$ is the mean-adjusted data transposed (so the data are in the columns). 
+
+
+After this procedure, new data can be classified using the new data set. For this project, we will be using a version of the Naive Bayes classifier in addition to PCA to recognize digits.
 
 % section methods (end)
 \bibliographystyle{plain}
