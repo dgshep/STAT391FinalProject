@@ -33,6 +33,7 @@ getImageData = function(r){
 	#prcomp(out, scale. = T)
 }
 toImage = function(vec, name){
+    library("jpeg")
     imageMat = matrix(vec, nrow = 28, byrow = T)
     imageMat = imageMat - min(imageMat)
     imageMat = 1 - imageMat/(max(imageMat))
