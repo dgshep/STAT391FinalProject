@@ -47,8 +47,8 @@ def main(argv=None):
         print >> sys.stderr, "\t for help use --help"
         return 2
         
-    imageFile = open("/Users/Davis/Dropbox/Spring12/STAT391/FinalPaper/train-images-idx3-ubyte", "rb");
-    out = open("/Users/Davis/Dropbox/Spring12/STAT391/FinalPaper/train-images-idx3-ubyte_proc", "wb");
+    imageFile = open("~/STAT 391/FinalProject/STAT391FinalProject/train-images-idx3-ubyte", "rb");
+    out = open("~/STAT 391/FinalProject/STAT391FinalProject/train-images-idx3-ubyte_proc", "wb");
     magicNumber = struct.unpack(">i", imageFile.read(4))[0]
     records = struct.unpack(">i", imageFile.read(4))[0]
     rows = struct.unpack(">i", imageFile.read(4))[0]
