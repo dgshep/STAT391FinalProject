@@ -10,6 +10,11 @@ getLabels = function(r){
 	close(to.read)
 	labels
 }
+componentsToImage = function(mat, i){
+    for(i in seq(1, i)){
+        toImage(mat[,i], paste("pc", i, ".jpg", sep=""))
+    }
+}
 getImageData = function(r){
     print("Select Image File")
 	to.read = file(file.choose(), "rb")
@@ -35,8 +40,8 @@ getImageData = function(r){
 toImage = function(vec, name){
     library("jpeg")
     imageMat = matrix(vec, nrow = 28, byrow = T)
-    imageMat = imageMat - min(imageMat)
-    imageMat = 1 - imageMat/(max(imageMat))
+    imageMat = imageMat - min(imageMat) #Shift to zero
+    imageMat = 1 - imageMat/(max(imageMat)) #Invert and normailze
     writeJPEG(imageMat, target = name)
 }
 plotComponents = function(mat, x, y){
