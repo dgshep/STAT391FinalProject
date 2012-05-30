@@ -67,7 +67,7 @@
 
 
 \begin{abstract}
-    Our PCA paper on PCA and stuff.
+This paper examines the use of Principal Components Analysis (PCA) in conjunction with a Naive Bayes Classifier applied to the problem of handwriting recognition for the numbers 0 through 9.
 \end{abstract}
 
 \section{Introduction} % (fold)
@@ -128,10 +128,21 @@ For the last bullet point, the new data set can be created by taking the transpo
 $$FinalData = RowFeatureVector \times RowDataAdjust$$
 where $RowFeatureVector$ is the matrix with the eigenvectors in the columns transposed (so tha the eigenvectors are rows, with the most significant on top) and $RowDataAdjust$ is the mean-adjusted data transposed (so the data are in the columns). 
 
-
-After this procedure, new data can be classified using the new data set. For this project, we will be using a version of the Naive Bayes classifier in addition to PCA to recognize digits.
+After this procedure, new data can be classified using the new data set. For this project, we will be using a version of the Naive Bayes classifier in addition to PCA to recognize digits. This reduced feature set is used because otherwise every individual pixel of an image would be considered a separate feature; even for small images, this result in a large number of features that would make computations more difficult. Additionally, performing PCA tells us what the most significant components are. By converting these components into images, this can give us more insight into the structure and correlations of each number.
 
 % section methods (end)
+
+\section{Data} % (fold)
+\label{sec:data}
+% section data (end)
+
+\section{Training and Testing} % (fold)
+\label{sec:training_and_testing}
+% section training and testing (end)
+
+\section{Results} % (fold)
+\label{sec:results}
+% section results (end)
 \bibliographystyle{plain}
 \bibliography{}
 \end{document}
