@@ -110,7 +110,7 @@ Now, suppose we have $n$ identically distributed random variables $X_1, \ldots, 
 
 Each principal component is formed by taking the values of the elements of the eigenvalues as the weights of the linear combination. That is, if each eigenvector has the form
 $${\bf e}_{i} = \left(\begin{array}{c} e_{1i} \\ e_{2i} \\ \vdots \\ e_{ni} \end{array}\right)$$
-The the principal components are formed by:
+The principal components are formed by:
 $$Y_1 = {\bf e}_{11}X_1 + {\bf e}_{21}X_2 + \ldots + {\bf e}_{n1}X_n$$
 $$Y_2 = {\bf e}_{12}X_1 + {\bf e}_{22}X_2 + \ldots + {\bf e}_{n2}X_n$$
 $$\vdots$$
@@ -128,9 +128,15 @@ For the last bullet point, the new data set can be created by taking the transpo
 $$FinalData = RowFeatureVector \times RowDataAdjust$$
 where $RowFeatureVector$ is the matrix with the eigenvectors in the columns transposed (so tha the eigenvectors are rows, with the most significant on top) and $RowDataAdjust$ is the mean-adjusted data transposed (so the data are in the columns). 
 
-After this procedure, new data can be classified using the new data set. For this project, we will be using a version of the Naive Bayes classifier in addition to PCA to recognize digits. This reduced feature set is used because otherwise every individual pixel of an image would be considered a separate feature; even for small images, this result in a large number of features that would make computations more difficult. Additionally, performing PCA tells us what the most significant components are. By converting these components into images, this can give us more insight into the structure and correlations of each number.
+With this procedure, new data sets are able to be determined with any similarly given data. This reduced feature set is used because otherwise every individual pixel of an image would be considered a separate feature; even for small images, this result in a large number of features that would make computations more difficult. Additionally, performing PCA tells us what the most significant components are. By converting these components into images, this can give us more insight into the structure and correlations of each number.
 
 For our purposes, we will simply be using the built-in \emph{prcomp} method in R to perform PCA. Doing ths minimizes the time spent on technical details and allows us to focus more on the classifying itself. Moreover, it also minimizes the risk of having errors in our own code. This background knowledge about what is going on is essential in order to gain insight into what these principal components mean and how to utilize them.
+
+In addition to using PCA, we will also be using a classification scheme to assist in interpreting the various hand-writting image data. Commonly used in other pattern recognition implementations, \textbf{classifications} are functions that groups and organizes information by mapping input feature vectors $x \epsilon X$ to output class labels $y \epsilon \{1,\ldots, C\}$, generally from one particular feature space to another. We will be focusing on statistical or, more specifically, probabilistic classification methods that produces and presents statistics in the form of probabilities (e.g. $p(x)$) when pertaining to certain observed variables. Following from the given PCA steps, this method involves utilizing \textbf{supervised learning}, or the usage of initially given input data (\textbf{training data}) to estimate patterns or parameters, in order to identify additional data and the desired function. With the use of probabilistic classification, we are able to quantitatively determine the accuracy of the data to predict the function and easily compensate for various imbalances (i.e. model mixtures) with the use of additional constants and probabilistic weights.
+
+For this particular project, we will be using a Naive Bayes classification system under a standard normal distribution model to identify the test images. Fundamentally, the \textbf{Naive Bayes} model is defined to be the assumption that all the features within the given model are conditionally independent, reducing the conditional Bayesian probability function to
+$$p(C | F_1,\ldots, F_n) = \Pi_{i=1}^{n}p(F_i | C)$$
+for a desired event $C$ and parameters $F_1,\ldots, F_n$. This naïve approach will be used particularly due to the simplicity of the probability model; with conditional independence, the computational steps for the training and predictions are drastically reduced to a simple product of probabilities, eliminating calculations with complicated exponential and series terms. Moreover, when determining the exact probabilities for each parameter, the normal distribution model will be used.
 
 % section methods (end)
 
@@ -156,6 +162,7 @@ For the training portion of our experiment, we used Python to parse the image da
 \label{sec:bibliography}
 \begin{enumerate}
 \item[[1.]] http://yann.lecun.com/exdb/mnist/
+\item[[2.]] Murphy, Kevin. "Naive Bayes Classifiers: Generative Classifiers." Bernoulli. 4701. (2006): 1-8. Print.
 \end{enumerate}
 % section bibliography (end)
 \bibliographystyle{plain}
