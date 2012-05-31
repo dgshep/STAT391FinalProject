@@ -172,7 +172,8 @@ However, similar to the PCA computation function, we will also be using two of R
 
 \section{Data} % (fold)
 \label{sec:data}
-The data we will be using is The MNIST Database of Handwritten Digits[1], a freely-available online data set of 60,000 training examples along with a test set of 10,000 examples. The full data set contains digits written by over 500 different writers, providing a suitable amount of variation for training and testing. However, for the sake of this project, only a subset of the training data will be used in order to train the normally distributed models. Out of the 60,000 training images, only the first 10,000 samples will be chosen out of which 9,900 will be used for the training data and the remaining 100 will be used for the actual testing. This makes makes it convenient for our purposes as it reduces the amount of time parsing image data (which takes a good fraction of the total time). Also, utilizing this online database allows us to focus on applying PCA or classifying instead of spending an incredible amount of time gathering data (which may be faulty, mislabeled, damaged, etc.). 
+The data we will be using is The MNIST Database of Handwritten Digits \cite{mnist}
+, a freely-available online data set of 60,000 training examples along with a test set of 10,000 examples. The full data set contains digits written by over 500 different writers, providing a suitable amount of variation for training and testing. However, for the sake of this project, only a subset of the training data will be used in order to train the normally distributed models. Out of the 60,000 training images, only the first 10,000 samples will be chosen out of which 9,900 will be used for the training data and the remaining 100 will be used for the actual testing. This makes makes it convenient for our purposes as it reduces the amount of time parsing image data (which takes a good fraction of the total time). Also, utilizing this online database allows us to focus on applying PCA or classifying instead of spending an incredible amount of time gathering data (which may be faulty, mislabeled, damaged, etc.). 
 
 As for the images themselves, each sample consists of a 28x28 pixel image of a centered and formatted digit. In relation to the previous classification method, each individual pixel is defined as the different features used for PCA and classification. Each pixel is associated with a particular value from 0 to 255, corresponding to the darkness associated with that image's pixel. The pixel values were all sequentially stored in a binary file (with some informational headers at the beginning), with each pixel represented with one byte so that it can be easily read as an array of numeric values. To get the data in usable form, file parsing was used to extract the pixels associated with one particular image and store within an array.
 % section data (end)
@@ -188,22 +189,16 @@ Once the new data set was determined with the R method, we began determining the
 \label{subsec:testing}
 In the testing portion of the experiment, we again used Python to extract the test image data into a temporary text file for similar reasons. We then determined the principal components for the new data by multiplying the matrix holding the data with the eigenvalues or results matrix, resulting in a new matrix representing the same images and their respective number principal component values. We then used the other method \emph{predict} by passing in the matrix and the respective models to obtain the likelihoods of the image being a certain digit. The only thing after that was to determine the maximum likelihood out of the ten digits to determine what digit the image closely represented.
 % section training and testing (end)
-
 \section{Results} % (fold)
 \label{sec:results}
 % section results (end)
 
 \section{Discussion} % (fold)
 \label{sec:discussion}
+\cite{bayes}
 % section discussion (end)
 
-\section{Bibliography} % (fold)
-\label{sec:bibliography}
-\begin{enumerate}
-\item[[1.]] http://yann.lecun.com/exdb/mnist/
-\item[[2.]] Murphy, Kevin. "Naive Bayes Classifiers: Generative Classifiers." Bernoulli. 4701. (2006): 1-8. Print.
-\end{enumerate}
-% section bibliography (end)
 \bibliographystyle{plain}
-\bibliography{}
+\bibliography{stat}
+
 \end{document}
