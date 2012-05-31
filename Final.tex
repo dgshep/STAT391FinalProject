@@ -80,6 +80,9 @@ Handwriting recognition, or the ability to analyze and correctly identify a part
 % section introduction (end)
 \section{Methods} % (fold)
 \label{sec:methods}
+
+\subsection{PCA} % (fold)
+\label{subsec:pca}
 Before we begin to talk about principal component analysis (PCA), we review some basic terminology and results from statistics and linear algebra.\\
 The \textbf{expected value} of a discrete data set $X$ (also called the mean) is defined as
 \begin{center}
@@ -132,22 +135,58 @@ With this procedure, new data sets are able to be determined with any similarly 
 
 For our purposes, we will simply be using the built-in \emph{prcomp} method in R to perform PCA. Doing ths minimizes the time spent on technical details and allows us to focus more on the classifying itself. Moreover, it also minimizes the risk of having errors in our own code. This background knowledge about what is going on is essential in order to gain insight into what these principal components mean and how to utilize them.
 
-In addition to using PCA, we will also be using a classification scheme to assist in interpreting the various hand-writting image data. Commonly used in other pattern recognition implementations, \textbf{classifications} are functions that groups and organizes information by mapping input feature vectors $x \in X$ to output class labels $y \in \{1,\ldots, C\}$, generally from one particular feature space to another. We will be focusing on statistical or, more specifically, probabilistic classification methods that produces and presents statistics in the form of probabilities (e.g. $p(x)$) when pertaining to certain observed variables. Following from the given PCA steps, this method involves utilizing \textbf{supervised learning}, or the usage of initially given input data (\textbf{training data}) to estimate patterns or parameters, in order to identify additional data and the desired function. With the use of probabilistic classification, we are able to quantitatively determine the accuracy of the data to predict the function and easily compensate for various imbalances (i.e. model mixtures) with the use of additional constants and probabilistic weights.
+\subsection{Classification} % (fold)
+\label{subsec:classification}
+In addition to using PCA, we will also be using a classification scheme to assist in interpreting the various hand-writting image data. Commonly used in other pattern recognition implementations, \textbf{classifications} are functions that groups and organizes information by mapping input features to output labels, generally from one particular feature space to another. We will be focusing on statistical or, more specifically, probabilistic classification methods that produces and presents statistics in the form of probabilities (e.g. $p(x)$) when pertaining to certain observed variables. 
 
-For this particular project, we will be using a Naive Bayes classification system under a standard normal distribution model to identify the test images. Fundamentally, the \textbf{Naive Bayes} model is defined to be the assumption that all the features within the given model are conditionally independent, reducing the conditional Bayesian probability function to
-$$p(C | F_1,\ldots, F_n) = \Pi_{i=1}^{n}p(F_i | C)$$
-for a desired event $C$ and parameters $F_1,\ldots, F_n$. This naïve approach will be used particularly due to the simplicity of the probability model; with conditional independence, the computational steps for the training and predictions are drastically reduced to a simple product of probabilities, eliminating calculations with complicated exponential and series terms. Moreover, when determining the exact probabilities for each parameter, the normal distribution model will be used.
+Following from the given PCA steps, this method involves utilizing \textbf{supervised learning}, or the usage of initially given input data (\textbf{training data}) to estimate patterns or parameters, in order to identify additional data and the desired function. With the use of probabilistic classification, we are able to quantitatively determine the accuracy, or \textbf{likelihood}, of the data. Similarly, by utilizing determined functions to determine likelihoods, it is possible to predict certain natures of the value. For example, if we compute the likelihood of the image for each digit, it is then possible from these values to determine which digit the image is (the one with the highest likelihood) and measure the accuracy of doing so.
+
+Note that the component values computed using PCA are random variables due to the fact that they are determined by the respective pixel values, also a random variable. However, while each component value is random, these values for each digit relative follow predictable patterns due to the similar nature of each number's shape across various images. This fact allows the use of a \textbf{statistical model} in order to determine the probability of obtaining that value as it factors in other values obtained for that particular component. 
+
+For this project, we will be modeling the component values under a \textbf{Gaussian} or \textbf{normal distribution}. As described above, the relative clustering of values for a particular component suggests the use of a normal distribution model ($X ~ N(\mu, \sigma^2)$). With variable component values related to each digit, there will be multiple normal distribution models with the mean ($\mu$) and standard deviation ($\sigma$) determined from the top chosen component values. Essentially, these values will be computed using the methods defined in the previous PCA section. 
+
+Also, we will be using these probabilities in conjunction with the \textbf{Naive Bayes Classifier}. Fundamentally, the Naive Bayes model follows traditional probability theory, relying on Bayes' rule to determine the actual probabilities of certain events. Under this rule, the probability of a certain event X occurring based on some feature x is defined to be
+
+$$p(X | x_1, \ldots, x_n) = \frac{p(x_1, \ldots, x_n | X) * p(X)}{p(x_1, \ldots, x_n)}$$
+
+This idea is naively simplified with the introduction of conditional independence, or the assumption of no dependencies between any of the features within the given model. By doing this, part of the numerator is simplified, rewriting
+
+$$p( x_1, \ldots, x_n | X) $$
+
+into
+
+$$\Pi_{i=1}^{n}p(x_1 | X)\ldots p(x_n | X)$$
+
+for a desired event $X$ and parameters $x_1,\ldots, x_n$. The probability in the denominator will also be eliminated from the equation as this constant is held constant throughout each probability model (and can be factored out accordingly). This naïve approach will be used particularly due to the simplicity of the probability model; with conditional independence, the computational steps for the training and predictions are drastically reduced to a simple product of probabilities, eliminating calculations with complicated exponential and series terms.
+
+With these two approaches, the likelihood of obtaining such data with these features
+$$L(X | x_1,\ldots, x_n ) = p(X) \Pi_{i=1}^{n}p(x_i | X)$$
+
+is now redefined to be something similar to
+
+$$L(X |  x_1,\ldots, x_n ) = p(X) \Pi_{i=1}^{n} \frac{1}{\sqrt{2 \pi \sigma^2}}  e^\frac{-(x_i - \mu)^2}{2 \sigma^2}$$
+
+However, similar to the PCA computation function, we will also be using two of R's built-in functions to train and compute probabilities: the \emph{naiveBayes}and \emph{predict} methods respectively. Additionally, these two functions will be used as they already pre-calculate feature probabilities according to a Gaussian distribution. For similar reasons as the earlier \emph{prcomp} method, the built-in functions are primarily used to minimize both the time spent finding and understanding the technical details involved and the amount of errors that might arise from ground-up implementations of this algorithm. The functions are also used as they can be specified to exhibit useful functionalities including threshold checks and specific model selections.
 
 % section methods (end)
 
 \section{Data} % (fold)
 \label{sec:data}
-The data we will be using is The MNIST Database of Handwritten Digits[1], a freely-available online data set of 60,000 training examples along with a teset set of 10,000 examples. The full data set contains digits written by over 500 different writers, providing a suitable amount of variation for training and testing. Each image is a 28x28 pixel image of a digit, centered and formatted so that it can be read and parsed as an array of numeric values corresponding to the darkness of a pixel. This makes makes it convenient for our purposes, so that we may focus on PCA and classifying instead of gathering data (which may be faulty, mislabeled, damaged, etc.). 
+The data we will be using is The MNIST Database of Handwritten Digits[1], a freely-available online data set of 60,000 training examples along with a test set of 10,000 examples. The full data set contains digits written by over 500 different writers, providing a suitable amount of variation for training and testing. However, for the sake of this project, only a subset of the training data will be used in order to train the normally distributed models. Out of the 60,000 training images, only the first 10,000 samples will be chosen out of which 9,900 will be used for the training data and the remaining 100 will be used for the actual testing. This makes makes it convenient for our purposes as it reduces the amount of time parsing image data (which takes a good fraction of the total time). Also, utilizing this online database allows us to focus on applying PCA or classifying instead of spending an incredible amount of time gathering data (which may be faulty, mislabeled, damaged, etc.). 
+
+As for the images themselves, each sample consists of a 28x28 pixel image of a centered and formatted digit. In relation to the previous classification method, each individual pixel is defined as the different features used for PCA and classification. Each pixel is associated with a particular value from 0 to 255, corresponding to the darkness associated with that image's pixel. The pixel values were all sequentially stored in a binary file (with some informational headers at the beginning), with each pixel represented with one byte so that it can be easily read as an array of numeric values. To get the data in usable form, file parsing was used to extract the pixels associated with one particular image and store within an array.
 % section data (end)
 
 \section{Training and Testing} % (fold)
-\label{sec:training_and_testing}
-For the training portion of our experiment, we used Python to parse the image data into an intermediate text file formatted so that it may easily be read by R; letting R parse and read directly seemed to take much longer. From there, the \emph{prcomp} method in R is used to perform PCA to convert the training data into principal components
+\subsection{Training} % (fold)
+\label{subsec:training}
+For the training portion of our experiment, we used Python to parse the image data into an intermediate text file formatted so that it may easily be read by R; letting R parse and read directly seemed to take much longer. From there, the \emph{prcomp} method in R was used to perform PCA to convert the training data into principal components. While this gave back the desired result (which were the image scores conveniently stored in a matrix named x), we were also able to obtain the eigenvector matrix (named rotation in the results matrix) as well as the variances between components (similarly named sdevs), both used to determine the relationship between the components and to manually calculate the principal components for later test images.
+
+Once the new data set was determined with the R method, we began determining the mean and the standard deviation as part of the classification step. Before attempting this, we extracted subsets of the given score data matrix with each matrix representing the data labeled for one particular digit. Then, to train for each individual digit, we utilized one of the other functions \emph{naiveBayes} by calling it and passing in these matrices of PCA scores as its argument.
+
+\subsection{Testing} % (fold)
+\label{subsec:testing}
+In the testing portion of the experiment, we again used Python to extract the test image data into a temporary text file for similar reasons. We then determined the principal components for the new data by multiplying the matrix holding the data with the eigenvalues or results matrix, resulting in a new matrix representing the same images and their respective number principal component values. We then used the other method \emph{predict} by passing in the matrix and the respective models to obtain the likelihoods of the image being a certain digit. The only thing after that was to determine the maximum likelihood out of the ten digits to determine what digit the image closely represented.
 % section training and testing (end)
 
 \section{Results} % (fold)
