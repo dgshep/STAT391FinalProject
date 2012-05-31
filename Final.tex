@@ -12,6 +12,8 @@
 % Setup for fullpage use
 \usepackage{fullpage}
 
+\usepackage{hyperref}
+
 % Uncomment some of the following if you use the features
 %
 % Running Headers and footers
@@ -148,7 +150,7 @@ Following from the given PCA steps, this method involves utilizing \textbf{super
 
 Note that the component values computed using PCA are random variables due to the fact that they are determined by the respective pixel values, also a random variable. However, while each component value is random, these values for each digit relative follow predictable patterns due to the similar nature of each number's shape across various images. This fact allows the use of a \textbf{statistical model} in order to determine the probability of obtaining that value as it factors in other values obtained for that particular component. 
 
-For this project, we will be modeling the component values under a \textbf{Gaussian} or \textbf{normal distribution}. As described above, the relative clustering of values for a particular component suggests the use of a normal distribution model ($X ~ N(\mu, \sigma^2)$). With variable component values related to each digit, there will be multiple normal distribution models with the mean ($\mu$) and standard deviation ($\sigma$) determined from the top chosen component values. Essentially, these values will be computed using the methods defined in the previous PCA section. 
+For this project, we will be modeling the component values under a \textbf{Gaussian} or \textbf{normal distribution}. As described above, the relative clustering of values for a particular component suggests the use of a normal distribution model ($X \sim N(\mu, \sigma^2)$). With variable component values related to each digit, there will be multiple normal distribution models with the mean ($\mu$) and standard deviation ($\sigma$) determined from the top chosen component values. Essentially, these values will be computed using the methods defined in the previous PCA section. 
 
 Also, we will be using these probabilities in conjunction with the \textbf{Naive Bayes Classifier}. Fundamentally, the Naive Bayes model follows traditional probability theory, relying on Bayes' rule to determine the actual probabilities of certain events. Under this rule, the probability of a certain event X occurring based on some feature x is defined to be
 
@@ -160,16 +162,16 @@ $$p( x_1, \ldots, x_n | X) $$
 
 into
 
-$$\Pi_{i=1}^{n}p(x_1 | X)\ldots p(x_n | X)$$
+$$\prod_{i=1}^{n}p(x_1 | X)\ldots p(x_n | X)$$
 
 for a desired event $X$ and parameters $x_1,\ldots, x_n$. The probability in the denominator will also be eliminated from the equation as this constant is held constant throughout each probability model (and can be factored out accordingly). This naïve approach will be used particularly due to the simplicity of the probability model; with conditional independence, the computational steps for the training and predictions are drastically reduced to a simple product of probabilities, eliminating calculations with complicated exponential and series terms.
 
 With these two approaches, the likelihood of obtaining such data with these features
-$$L(X | x_1,\ldots, x_n ) = p(X) \Pi_{i=1}^{n}p(x_i | X)$$
+$$L(X | x_1,\ldots, x_n ) = p(X) \prod_{i=1}^{n}p(x_i | X)$$
 
 is now redefined to be something similar to
 
-$$L(X |  x_1,\ldots, x_n ) = p(X) \Pi_{i=1}^{n} \frac{1}{\sqrt{2 \pi \sigma^2}}  e^\frac{-(x_i - \mu)^2}{2 \sigma^2}$$
+$$L(X |  x_1,\ldots, x_n ) = p(X) \prod_{i=1}^{n} \frac{1}{\sqrt{2 \pi \sigma^2}}  e^\frac{-(x_i - \mu)^2}{2 \sigma^2}$$
 
 However, similar to the PCA computation function, we will also be using two of R's built-in functions to train and compute probabilities: the \emph{naiveBayes}and \emph{predict} methods respectively. Additionally, these two functions will be used as they already pre-calculate feature probabilities according to a Gaussian distribution. For similar reasons as the earlier \emph{prcomp} method, the built-in functions are primarily used to minimize both the time spent finding and understanding the technical details involved and the amount of errors that might arise from ground-up implementations of this algorithm. The functions are also used as they can be specified to exhibit useful functionalities including threshold checks and specific model selections.
 
@@ -178,7 +180,7 @@ However, similar to the PCA computation function, we will also be using two of R
 \section{Data} % (fold)
 \label{sec:data}
 The data we will be using is The MNIST Database of Handwritten Digits \cite{mnist}
-, a freely-available online data set of 60,000 training examples along with a test set of 10,000 examples. The full data set contains digits written by over 500 different writers, providing a suitable amount of variation for training and testing. However, for the sake of this project, only a subset of the training data will be used in order to train the normally distributed models. Out of the 60,000 training images, only the first 10,000 samples will be chosen out of which 9,900 will be used for the training data and the remaining 100 will be used for the actual testing. This makes makes it convenient for our purposes as it reduces the amount of time parsing image data (which takes a good fraction of the total time). Also, utilizing this online database allows us to focus on applying PCA or classifying instead of spending an incredible amount of time gathering data (which may be faulty, mislabeled, damaged, etc.). 
+, a freely-available online data set of 60,000 training examples along with a test set of 10,000 examples. The full data set contains digits written by over 500 different writers, providing a suitable amount of variation for training and testing. For example, some of the ones are slanted left instead of right, which corresponds to left-handed writers. However, for the sake of this project, only a subset of the training data will be used in order to train the normally distributed models. Out of the 60,000 training images, only the first 10,000 samples will be chosen out of which 9,900 will be used for the training data and the remaining 100 will be used for the actual testing. This makes makes it convenient for our purposes as it reduces the amount of time parsing image data (which takes a good fraction of the total time). Also, utilizing this online database allows us to focus on applying PCA or classifying instead of spending an incredible amount of time gathering data (which may be faulty, mislabeled, damaged, etc.). 
 
 As for the images themselves, each sample consists of a 28x28 pixel image of a centered and formatted digit. In relation to the previous classification method, each individual pixel is defined as the different features used for PCA and classification. Each pixel is associated with a particular value from 0 to 255, corresponding to the darkness associated with that image's pixel. The pixel values were all sequentially stored in a binary file (with some informational headers at the beginning), with each pixel represented with one byte so that it can be easily read as an array of numeric values. To get the data in usable form, file parsing was used to extract the pixels associated with one particular image and store within an array.
 % section data (end)
