@@ -52,14 +52,15 @@ plotComponents = function(mat, x, y){
     text(xvec, yvec, label = rownames(mat), col = strtoi(rownames(mat), base = 10) + 1)
 }
 train = function(x, comp){
-    model = naiveBayes(x[,-(comp + 1):-ncol(x)], x$labels)
+    library("e1071")
+    model = naiveBayes(x[,1:comp], x$labels)
     model
 }
-addLabels = function(dat, lab){x
+addLabels = function(dat, lab){
     x = data.frame(data = dat, labels = as.character(lab))
 }
 classify = function(model, newDat){
-    pred = predict(model, newDat)
+    pred = predict(model, newDat[,1:(ncol(newDat)-1)])
     cat(sum(newDat$labels==pred)/nrow(newDat))
     pred
 }
@@ -71,18 +72,28 @@ analyze = function(dat, lab){
          plotComponents(dat, 736, 737)
    pc
 }
-data = getImageData(10000)
-labels = as.character(getLabels(10000))
+imageReduce = function(image, pca, comp){
+    for(i in 2:comp) {
+        reduce = pca$rot[,1:i]%*%image[1:i]
+        toImage(reduce, paste(formatC(i, width = 3, format = "d", flag = "0") ,".jpg", sep=""))
+    }
+}
+images = 10000
+data = data.frame(getImageData(images))
+labels = as.character(getLabels(images))
 pca = prcomp(data)
-train.labels = labels[1:9900]
-test.labels = labels[9001:10000]
-train.pca = addLabels(pca$x[1:9000, ], train.labels)
-test.pca = addLabels(pca$x[9001:10000, ], test.labels)
-pca.model = train(train.pca, 100)
+train.labels = labels[1:(images-100)]
+test.labels = labels[(images-99):images]
+train.pca = addLabels(pca$x[1:(images-100), ], train.labels)
+test.pca = addLabels(pca$x[(images-99):images, ], test.labels)
+pca.model = train(train.pca, 50)
+pred = classify(pca.model, train.pca)
 pred = classify(pca.model, test.pca)
 
-train.data = addLabels(data[1:9900, ], train.labels)
-test.data = addLabels(data[9001:10000, ], test.labels)
+
+train.data = addLabels(data[1:(images-100), ], train.labels)
+test.data = addLabels(data[(images-99):images, ], test.labels)
 std.model = train(train.data, 784)
+pred = classify(std.model, train.data)
 pred = classify(std.model, test.data)
 
