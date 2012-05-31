@@ -20,7 +20,8 @@ getImageData = function(r){
 	to.read = file(file.choose(), "rb")
 	f = scan(to.read)
 	out = matrix(f[1:(28*28*r)], nrow = r, byrow = T)
-	row.names(out) = getLabels(r)
+	#labels = as.character(getLabels(r))
+	
 	out
 	# magicNumber = readBin(to.read, integer(), endian = "big")
 	#  records = readBin(to.read, integer(), endian = "big")
@@ -50,12 +51,49 @@ plotComponents = function(mat, x, y){
     plot(xvec, yvec, pch = "", xlab = c("Principal Component ", x), ylab = c("Principal Component ", y))
     text(xvec, yvec, label = rownames(mat), col = strtoi(rownames(mat), base = 10) + 1)
 }
-analyze = function(dat){
+train = function(x, comp){
+    library("e1071")
+    model = naiveBayes(x[,1:comp], x$labels)
+    model
+}
+addLabels = function(dat, lab){
+    x = data.frame(data = dat, labels = as.character(lab))
+}
+classify = function(model, newDat){
+    pred = predict(model, newDat[,1:(ncol(newDat)-1)])
+    cat(sum(newDat$labels==pred)/nrow(newDat))
+    pred
+}
+analyze = function(dat, lab){
    pc = prcomp(dat)
    newdat = pc$x
-   par(mfrow=c(1,2))
-   plotComponents(newdat, 1, 2)
-   plotComponents(dat, 736, 737)
+      par(mfrow=c(1,2))
+         plotComponents(newdat, 1, 2)
+         plotComponents(dat, 736, 737)
    pc
 }
+imageReduce = function(image, pca, comp){
+    for(i in 2:comp) {
+        reduce = pca$rot[,1:i]%*%image[1:i]
+        toImage(reduce, paste(formatC(i, width = 3, format = "d", flag = "0") ,".jpg", sep=""))
+    }
+}
+images = 10000
+data = data.frame(getImageData(images))
+labels = as.character(getLabels(images))
+pca = prcomp(data)
+train.labels = labels[1:(images-100)]
+test.labels = labels[(images-99):images]
+train.pca = addLabels(pca$x[1:(images-100), ], train.labels)
+test.pca = addLabels(pca$x[(images-99):images, ], test.labels)
+pca.model = train(train.pca, 50)
+pred = classify(pca.model, train.pca)
+pred = classify(pca.model, test.pca)
+
+
+train.data = addLabels(data[1:(images-100), ], train.labels)
+test.data = addLabels(data[(images-99):images, ], test.labels)
+std.model = train(train.data, 784)
+pred = classify(std.model, train.data)
+pred = classify(std.model, test.data)
 
