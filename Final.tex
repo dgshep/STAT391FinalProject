@@ -203,6 +203,35 @@ In the testing portion of the experiment, we again used Python to extract the te
 \section{Discussion} % (fold)
 \label{sec:discussion}
 \cite{bayes}
+
+\section{Discussion}
+
+\subsection{Procedure Evaluation}
+\label{subsec:eval}
+
+Overall, our general implementation successfully addressed the issue of using PCA for hand-writing classification in a relatively simple and straight-forward way. Similar to other machine learning applications, the project called for the use of  \emph{supervised learning} (due to its use of data training and testing), a process that we correctly implemented from previously existing pseudo code and examples. Additionally, in regards to the computations associated with the training and PCA (outlined in the Methods section), much of it was performed using R's built-in functions which not only abstracted much of the much of the complexity but returned results with extremely low possibilities of error (lots of updates and implementation of the methods by many others guaranteed no systematic errors). Finally, because of the application of Bayesian statistics and conditional probability, both calculation and interpretation of the data was simplified, leaving the result to be one final probability representing the product of probabilities. 
+
+The only limitations of this entire procedure dealt with the properties of the employed handwritten digit data as well as the intricacies of R's functional language. While we were able to perform the procedure on 60,000 images from the MNIST database, we were unable to perform the same operation using more test data or images from other databases (which would have been helpful in determining the threshold for data training and component quantity analysis). Also, much of the time spent on this project dealt with configuring the database's data into a collection with the right properties that would be either accepted by the functions or would result in any output (as incorrect specifications would result in an error or incorrect data that deviated from the available specification).
+
+\subsection{Result Comparison}
+\label{subsec:comparison}
+
+Compared to our expectations made from the start of this project, the results obtained from this project were slightly better. With the general knowledge that the Naive-Bayes classifier eliminates high-dimensionality properties and utilizes simple probability mapping, we had assumed that our method would predict between 80-85% of the images. However, the highest accuracy percentage
+
+%Talk about general expectation of classification (~90 result with other previous values)
+%Compare with Hil's earlier handwritting code (explained in class that our highest prediction accuracy value was a little higher than his)
+%Talk about margin of error???
+%Talk about general Naive-Bayes success (compare with other groups' results) as well as highest values recorded (used with same or other distributions)
+
+\subsection{Potential Next Steps}
+\label{subsec:next steps}
+
+One possible next step would be to compare the Naive-Bayes classifier results with other classifier algorithms. The Naive-Bayes classifier, while an extension of Bayesian statistics, is one out of the many as a \emph{linear classifiers} as it determines the classification based on a linear combination of certain features. However, as explained before, the naïve assumption serves only as a extremely general model due to its naïve assumption of conditional independence across each of the given features (which most likely isn't the case). Thus, other linear classifiers such as logistic regression or the perceptron algorithm (both of which can be applied on the PCA-transformed data) as well as non-linear algorithms such as the K-nearest Neighbor algorithm (which classifies based on the total difference between features) can be compared against one another to determine the most accurate classification algorithm and, more importantly, if the Naive-Bayes algorithm stands alone in its ability to accurately determine handwritten digits.
+
+Another possible step would be to utilize other distribution models or variations of the used Gaussian model when trying to statistically compare the test images' values with the training images' values for each of the top selected components. Each of the top computed components for each test image was modeled under a Gaussian distribution in order to determine the likelihood of obtaining that image based on these values. However, besides the normal distribution, there are other different distributions that have similar properties that could be used to estimate the probability of getting a certain pixel value such as the binomial (when used in a fashion similar to HW7), Cauchy, and Rayleigh distributions that might better classify the test images. Also, further comparisons under a multivariate normal distribution pose as a future possibility to further this project. In order to simplify the scope of this project, we assumed that each pixel value independently modeled under a one-dimensional normal distribution (in accordance to the conditional independence assumption). Unfortunately, this overall relationship between pixels is generally not independent, instead being correlated to other surrounding pixels. Thus, further testing might include comparisons of the accuracy results under a univariate normal distribution with those under a multivariate normal distribution (which starting code is attached at the end of this paper). 
+
+Finally, the last possible addition to this project would be to compare the pre-made functions used in this project with similar self-implemented versions. Initially, we tried implementing the Naive-Bayes classifier as well as several methods that pertained to the PCA process (mainly the functions that would determine the transpose and covariance matrices). However, as mentioned in earlier sections, these functions actually contained many errors and required lots of time to implement correctly (for project legacy, these are attached to the end of this paper). Thus, it might be a worthwhile endeavor to compare the accuracy of these two methods and, if they don't output similar results, determine difference between R's implementation and user-generated methods.
+
 % section discussion (end)
 
 \bibliographystyle{plain}
