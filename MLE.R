@@ -58,14 +58,8 @@ calcMLE = function(params, rot, r){
 		for(i in seq(0, 9)){
 			sum = 0
 			for(j in seq(1, comps)){
-#				prob = dnorm(pidata[image,j], mean=params[(i*10) + j,1], sd=params[(i*10) + j,2])
-#				if(prob == 0){
-#					cat(pidata[image,j], params[(i*10) + j, 1], params[(i*10) + j, 2],"\n")
-#				} else {
-#					sum = sum + log(prob)
-#				}
-
-				sum = sum + (pidata[image, j] - params[(i*10)+j, 1])^2
+				prob = dnorm(pidata[image,j], mean=params[(i*10) + j,1], sd=params[(i*10) + j,2])
+				sum = sum + log(prob)
 			}
 
 			sums = c(sums, sum)
@@ -76,3 +70,27 @@ calcMLE = function(params, rot, r){
 
 	results
 }
+
+# Function that calculates MLE of image using given parameters of selected pixels
+# (using multivariate distribution model)
+calcMLEMulti = function(params, rot, r){
+	comps = length(params[[1]]$means)
+	sums = c()	
+	images = getImageData(r)
+
+	pidata = images %*% rot
+
+	for(image in seq(1, nrow(pidata))){
+		for(i in seq(1, 10)){
+			# MULTIVARIATE USAGE HERE (utilizes dmvnorm from imported library package)
+			sum = dmvnorm(pidata[image,1:comps], params[[i]]$means, params[[i]]$Sigma, log=T)
+
+			sums = c(sums, sum)
+		}
+	}
+
+	results = matrix(sums, ncol=10, byrow=T)
+
+	results
+}
+
