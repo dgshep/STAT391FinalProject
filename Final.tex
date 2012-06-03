@@ -12,6 +12,8 @@
 % Setup for fullpage use
 \usepackage{fullpage}
 
+\usepackage{hyperref}
+
 % Uncomment some of the following if you use the features
 %
 % Running Headers and footers
@@ -26,6 +28,9 @@
 %\usepackage{amsmath}
 %\usepackage{amssymb}
 %\usepackage{latexsym}
+
+% For setting space size
+\usepackage{setspace}
 
 % Surround parts of graphics with box
 \usepackage{boxedminipage}
@@ -56,6 +61,8 @@
 \author{ Davis Shepherd \and Jason Uanon \and Yukio Maeda}
 
 \date{\today}
+
+\setstretch{1.5}
 
 \begin{document}
 
@@ -145,7 +152,7 @@ Following from the given PCA steps, this method involves utilizing \textbf{super
 
 Note that the component values computed using PCA are random variables due to the fact that they are determined by the respective pixel values, also a random variable. However, while each component value is random, these values for each digit relative follow predictable patterns due to the similar nature of each number's shape across various images. This fact allows the use of a \textbf{statistical model} in order to determine the probability of obtaining that value as it factors in other values obtained for that particular component. 
 
-For this project, we will be modeling the component values under a \textbf{Gaussian} or \textbf{normal distribution}. As described above, the relative clustering of values for a particular component suggests the use of a normal distribution model ($X ~ N(\mu, \sigma^2)$). With variable component values related to each digit, there will be multiple normal distribution models with the mean ($\mu$) and standard deviation ($\sigma$) determined from the top chosen component values. Essentially, these values will be computed using the methods defined in the previous PCA section. 
+For this project, we will be modeling the component values under a \textbf{Gaussian} or \textbf{normal distribution}. As described above, the relative clustering of values for a particular component suggests the use of a normal distribution model ($X \sim N(\mu, \sigma^2)$). With variable component values related to each digit, there will be multiple normal distribution models with the mean ($\mu$) and standard deviation ($\sigma$) determined from the top chosen component values. Essentially, these values will be computed using the methods defined in the previous PCA section. 
 
 Also, we will be using these probabilities in conjunction with the \textbf{Naive Bayes Classifier}. Fundamentally, the Naive Bayes model follows traditional probability theory, relying on Bayes' rule to determine the actual probabilities of certain events. Under this rule, the probability of a certain event X occurring based on some feature x is defined to be
 
@@ -157,16 +164,16 @@ $$p( x_1, \ldots, x_n | X) $$
 
 into
 
-$$\Pi_{i=1}^{n}p(x_1 | X)\ldots p(x_n | X)$$
+$$\prod_{i=1}^{n}p(x_1 | X)\ldots p(x_n | X)$$
 
 for a desired event $X$ and parameters $x_1,\ldots, x_n$. The probability in the denominator will also be eliminated from the equation as this constant is held constant throughout each probability model (and can be factored out accordingly). This naïve approach will be used particularly due to the simplicity of the probability model; with conditional independence, the computational steps for the training and predictions are drastically reduced to a simple product of probabilities, eliminating calculations with complicated exponential and series terms.
 
 With these two approaches, the likelihood of obtaining such data with these features
-$$L(X | x_1,\ldots, x_n ) = p(X) \Pi_{i=1}^{n}p(x_i | X)$$
+$$L(X | x_1,\ldots, x_n ) = p(X) \prod_{i=1}^{n}p(x_i | X)$$
 
 is now redefined to be something similar to
 
-$$L(X |  x_1,\ldots, x_n ) = p(X) \Pi_{i=1}^{n} \frac{1}{\sqrt{2 \pi \sigma^2}}  e^\frac{-(x_i - \mu)^2}{2 \sigma^2}$$
+$$L(X |  x_1,\ldots, x_n ) = p(X) \prod_{i=1}^{n} \frac{1}{\sqrt{2 \pi \sigma^2}}  e^\frac{-(x_i - \mu)^2}{2 \sigma^2}$$
 
 However, similar to the PCA computation function, we will also be using two of R's built-in functions to train and compute probabilities: the \emph{naiveBayes}and \emph{predict} methods respectively. Additionally, these two functions will be used as they already pre-calculate feature probabilities according to a Gaussian distribution. For similar reasons as the earlier \emph{prcomp} method, the built-in functions are primarily used to minimize both the time spent finding and understanding the technical details involved and the amount of errors that might arise from ground-up implementations of this algorithm. The functions are also used as they can be specified to exhibit useful functionalities including threshold checks and specific model selections.
 
@@ -175,7 +182,7 @@ However, similar to the PCA computation function, we will also be using two of R
 \section{Data} % (fold)
 \label{sec:data}
 The data we will be using is The MNIST Database of Handwritten Digits \cite{mnist}
-, a freely-available online data set of 60,000 training examples along with a test set of 10,000 examples. The full data set contains digits written by over 500 different writers, providing a suitable amount of variation for training and testing. However, for the sake of this project, only a subset of the training data will be used in order to train the normally distributed models. Out of the 60,000 training images, only the first 10,000 samples will be chosen out of which 9,900 will be used for the training data and the remaining 100 will be used for the actual testing. This makes makes it convenient for our purposes as it reduces the amount of time parsing image data (which takes a good fraction of the total time). Also, utilizing this online database allows us to focus on applying PCA or classifying instead of spending an incredible amount of time gathering data (which may be faulty, mislabeled, damaged, etc.). 
+, a freely-available online data set of 60,000 training examples along with a test set of 10,000 examples. The full data set contains digits written by over 500 different writers, providing a suitable amount of variation for training and testing. For example, some of the ones are slanted left instead of right, which corresponds to left-handed writers. However, for the sake of this project, only a subset of the training data will be used in order to train the normally distributed models. Out of the 60,000 training images, only the first 10,000 samples will be chosen out of which 9,900 will be used for the training data and the remaining 100 will be used for the actual testing. This makes makes it convenient for our purposes as it reduces the amount of time parsing image data (which takes a good fraction of the total time). Also, utilizing this online database allows us to focus on applying PCA or classifying instead of spending an incredible amount of time gathering data (which may be faulty, mislabeled, damaged, etc.). 
 
 As for the images themselves, each sample consists of a 28x28 pixel image of a centered and formatted digit. In relation to the previous classification method, each individual pixel is defined as the different features used for PCA and classification. Each pixel is associated with a particular value from 0 to 255, corresponding to the darkness associated with that image's pixel. The pixel values were all sequentially stored in a binary file (with some informational headers at the beginning), with each pixel represented with one byte so that it can be easily read as an array of numeric values. To get the data in usable form, file parsing was used to extract the pixels associated with one particular image and store within an array.
 % section data (end)
@@ -245,6 +252,32 @@ In the testing portion of the experiment, we again used Python to extract the te
 \section{Discussion} % (fold)
 \label{sec:discussion}
 \cite{bayes}
+
+\section{Discussion}
+
+\subsection{Procedure Evaluation}
+\label{subsec:eval}
+
+Overall, our general implementation successfully addressed the issue of using PCA for hand-writing classification in a relatively simple and straight-forward way. Similar to other machine learning applications, the project called for the use of  \emph{supervised learning} (due to its use of data training and testing), a process that we correctly implemented from previously existing pseudo code and examples. Additionally, in regards to the computations associated with the training and PCA (outlined in the Methods section), much of it was performed using R's built-in functions which not only abstracted much of the much of the complexity but returned results with extremely low possibilities of error (lots of updates and implementation of the methods by many others guaranteed no systematic errors). Finally, because of the application of Bayesian statistics and conditional probability, both calculation and interpretation of the data was simplified, leaving the result to be one final probability representing the product of probabilities. 
+
+The only limitations of this entire procedure dealt with the properties of the employed handwritten digit data as well as the intricacies of R's functional language. While we were able to perform the procedure on 60,000 images from the MNIST database, we were unable to perform the same operation using more test data or images from other databases (which would have been helpful in determining the threshold for data training and component quantity analysis). Also, much of the time spent on this project dealt with configuring the database's data into a collection with the right properties that would be either accepted by the functions or would result in any output (as incorrect specifications would result in an error or incorrect data that deviated from the available specification).
+
+\subsection{Result Comparison}
+\label{subsec:comparison}
+
+Compared to our expectations made from the start of this project, the results obtained from this project were slightly better. With the general knowledge that the Naive-Bayes classifier could predict fairly well due to its elimination of high-dimensionality properties and simple probability mapping, we had assumed that our method could predict a maximum of 80-85\% of the images regardless of the number of components used. However, as observed from the results, our prediction range was comparably off as the percentage range varied considerably depending on the number of components used. For example, when using the first 50 and 100 components, the accuracy percentage was respectively 93\% and 92\%, both of which were a little higher than our maximum prediction rate. Conversely, when using zero or all 784 components, the accuracy percentage was around 66\%, a rate considerably worse than our initial guess.
+
+The difference in findings also pertained to comparisons with other results obtained from similar PCA-applied Naive-Bayes classification. When compared to the STAT391 hand-writing classification model (discussed in-class), our procedure did a little better all-around as we were able to accurately predict more images. From Hil Lyons, we found that our resulted modeled the general pattern obtained by his results (with the maximum accuracy values obtained using ~100 components). However, our accuracy numbers were slightly higher, with our model accurately predicting 2-10\% more images than the model. Also, when compared to other groups' findings, we found that the accuracy rating model was again similar, with the maximum overall accuracy topped around 100 features. In addition, the accuracy rating quantity for these ranges modeled similarly to our results, loosely modeling a quadratic function with a maximum accuracy rating of around 92\%. The only difference between our results and their results were the accuracy percentages using extreme number of features. We found that our minimum accuracy values were higher than those observed by other groups, a range that was between 12\% at the lowest and 43\% at the highest. These differences in overall accuracy values could be attributed to two features: one being the limited training data that was used (only used a subset of the whole MNIST images) and the other being the use of R's built-in libraries.
+
+\subsection{Potential Next Steps}
+\label{subsec:next steps}
+
+One possible next step would be to compare the Naive-Bayes classifier results with other classifier algorithms. The Naive-Bayes classifier, while an extension of Bayesian statistics, is one out of the many as a \emph{linear classifiers} as it determines the classification based on a linear combination of certain features. However, as explained before, the naïve assumption serves only as a extremely general model due to its naïve assumption of conditional independence across each of the given features (which most likely isn't the case). Thus, other linear classifiers such as logistic regression or the perceptron algorithm (both of which can be applied on the PCA-transformed data) as well as non-linear algorithms such as the K-nearest Neighbor algorithm (which classifies based on the total difference between features) can be compared against one another to determine the most accurate classification algorithm and, more importantly, if the Naive-Bayes algorithm stands alone in its ability to accurately determine handwritten digits.
+
+Another possible step would be to utilize other distribution models or variations of the used Gaussian model when trying to statistically compare the test images' values with the training images' values for each of the top selected components. Each of the top computed components for each test image was modeled under a Gaussian distribution in order to determine the likelihood of obtaining that image based on these values. However, besides the normal distribution, there are other different distributions that have similar properties that could be used to estimate the probability of getting a certain pixel value such as the binomial (when used in a fashion similar to HW\#7), Cauchy, and Rayleigh distributions that might better classify the test images. Also, further comparisons under a multivariate normal distribution pose as a future possibility to further this project. In order to simplify the scope of this project, we assumed that each pixel value independently modeled under a one-dimensional normal distribution (in accordance to the conditional independence assumption). Unfortunately, this overall relationship between pixels is generally not independent, instead being correlated to other surrounding pixels. Thus, further testing might include comparisons of the accuracy results under a univariate normal distribution with those under a multivariate normal distribution (which starting code is attached at the end of this paper). 
+
+Finally, the last possible addition to this project would be to compare the pre-made functions used in this project with similar self-implemented versions. Initially, we tried implementing the Naive-Bayes classifier as well as several methods that pertained to the PCA process (mainly the functions that would determine the transpose and covariance matrices). However, as mentioned in earlier sections, these functions actually contained many errors and required lots of time to implement correctly (for project legacy, these are attached to the end of this paper). Thus, it might be a worthwhile endeavor to compare the accuracy of these two methods and, if they don't output similar results, determine difference between R's implementation and user-generated methods.
+
 % section discussion (end)
 
 \bibliographystyle{plain}
