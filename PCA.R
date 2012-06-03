@@ -82,18 +82,23 @@ images = 10000
 data = data.frame(getImageData(images))
 labels = as.character(getLabels(images))
 pca = prcomp(data)
-train.labels = labels[1:(images-100)]
-test.labels = labels[(images-99):images]
-train.pca = addLabels(pca$x[1:(images-100), ], train.labels)
-test.pca = addLabels(pca$x[(images-99):images, ], test.labels)
-pca.model = train(train.pca, 50)
+train.labels = labels[1:(images-1000)]
+test.labels = labels[(images-999):images]
+train.pca = addLabels(pca$x[1:(images-1000), ], train.labels)
+test.pca = addLabels(pca$x[(images-999):images, ], test.labels)
+pca.model = train(train.pca, 100)
 pred = classify(pca.model, train.pca)
 pred = classify(pca.model, test.pca)
 
 
-train.data = addLabels(data[1:(images-100), ], train.labels)
-test.data = addLabels(data[(images-99):images, ], test.labels)
+train.data = addLabels(data[1:(images-1000), ], train.labels)
+test.data = addLabels(data[(images-999):images, ], test.labels)
 std.model = train(train.data, 784)
 pred = classify(std.model, train.data)
 pred = classify(std.model, test.data)
-
+performance = c()
+for(i in seq(2,784)){
+    pca.model = train(train.pca, i);
+    pred = classify(pca.model, test.pca);
+    performance = c(performance, sum(test.pca$labels==pred)/nrow(test.pca));
+}

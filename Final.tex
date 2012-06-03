@@ -21,6 +21,8 @@
 
 % Multipart figures
 %\usepackage{subfigure}
+\usepackage{caption}
+\usepackage{subcaption}
 
 % More symbols
 %\usepackage{amsmath}
@@ -196,51 +198,62 @@ Once the new data set was determined with the R method, we began determining the
 \label{subsec:testing}
 In the testing portion of the experiment, we again used Python to extract the test image data into a temporary text file for similar reasons. We then determined the principal components for the new data by multiplying the matrix holding the data with the eigenvalues or results matrix, resulting in a new matrix representing the same images and their respective number principal component values. We then used the other method \emph{predict} by passing in the matrix and the respective models to obtain the likelihoods of the image being a certain digit. The only thing after that was to determine the maximum likelihood out of the ten digits to determine what digit the image closely represented.
 % section training and testing (end)
-
 \section{Results} % (fold)
 \label{sec:results}
-
-\subsection{Implementation}
-\label{subsec:narrative}
-
-TODO:
-\begin{itemize}
-    \item Talk about number of components chosen and tests with different numbers
-    \item Talk about number of images used for test and training
-    \item Talk about collections (list, data.frame(), matrix) and various techniques used to transform collections so that functions could spit out correct result
-    \item Talk about plots and results that needed to be stored (e.g. variables used, transitional data, final data)
-\end{itemize}
-
-
-\subsection{Results Interpretation/Analysis}
-\label{subsec:interpretation}
-
-TODO:
-\begin{itemize}
-    \item Talk about overall results (what did we see, what didn't we see, why did we get the rates with these images, etc.)
-    \item Talk about patterns and relationship between components used and total image accuracy rate
-    \item Talk about possible factors for wrongly predicted images (features, patterns, etc.)
-    \item Talk about other significant factors or trends noticable in distributions, PCA process, etc.
-\end{itemize}
-
-\subsection{Plots and Tables}
-\label{subsec:plots}
-
-TODO:
-\begin{itemize}
-    \item Include cumulative component percentage plot and briefly talk about component part of PCA
-    \item Include PCA Component Plot and briefly talk about component part of PCA
-    \item (???????) Include Principal Components Visualized image (from slides) and briefly talk about component part of PCA (??????)
-    \item Include two-dimensional plot of data using two components (????) and explain results using plot
-    \item Include table of Prediction Accuracy vs. Components Used and explain results (???)
-\end{itemize}
-
-
+\begin{figure} % PC Figure
+    \centering
+    \begin{subfigure}[b]{0.07\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figs/pc1.jpg}
+            \caption{PC1}
+            \label{fig:pc1}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.07\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figs/pc2.jpg}
+            \caption{PC2}
+            \label{fig:pc2}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.07\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figs/pc3.jpg}
+            \caption{PC3}
+            \label{fig:pc3}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.07\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figs/pc4.jpg}
+            \caption{PC4}
+            \label{fig:pc4}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.07\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figs/pc5.jpg}
+            \caption{PC5}
+            \label{fig:pc5}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.07\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{figs/pc6.jpg}
+            \caption{PC6}
+            \label{fig:pc6}
+    \end{subfigure}
+    \label{fig:pcs}
+    \caption{Principal components of the set of threes.}
+\end{figure}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{figs/PCAComponentPlot.pdf}
+    \caption{(Left) Plot of images' first two principal components. (Right) Plot of images' two arbitrary pixel values}
+    \label{fig:pcaplot}
+\end{figure}    
 % section results (end)
 
 \section{Discussion} % (fold)
 \label{sec:discussion}
 \cite{bayes}
+
+\section{Discussion}
 
 \subsection{Procedure Evaluation}
 \label{subsec:eval}
@@ -263,7 +276,7 @@ One possible next step would be to compare the Naive-Bayes classifier results wi
 
 Another possible step would be to utilize other distribution models or variations of the used Gaussian model when trying to statistically compare the test images' values with the training images' values for each of the top selected components. Each of the top computed components for each test image was modeled under a Gaussian distribution in order to determine the likelihood of obtaining that image based on these values. However, besides the normal distribution, there are other different distributions that have similar properties that could be used to estimate the probability of getting a certain pixel value such as the binomial (when used in a fashion similar to HW\#7), Cauchy, and Rayleigh distributions that might better classify the test images. Also, further comparisons under a multivariate normal distribution pose as a future possibility to further this project. In order to simplify the scope of this project, we assumed that each pixel value independently modeled under a one-dimensional normal distribution (in accordance to the conditional independence assumption). Unfortunately, this overall relationship between pixels is generally not independent, instead being correlated to other surrounding pixels. Thus, further testing might include comparisons of the accuracy results under a univariate normal distribution with those under a multivariate normal distribution (which starting code is attached at the end of this paper). 
 
-Finally, the last possible addition to this project would be to compare the pre-made functions used in this project with similar self-implemented versions. Initially, we tried implementing the Naive-Bayes classifier as well as several methods that pertained to the PCA process (mainly the functions that would determine the transpose and covariance matrices). However, as mentioned in earlier sections, these functions actually contained many errors and required lots of time to implement correctly (for project legacy, these are attached to the end of this paper). Even when implemented correctly, the accuracy obtained from running the code was extremely low to even be considered successful (ran with ~10\% accuracy). Thus, it might be a worthwhile endeavor to compare the accuracy of these two methods and, if they don't output similar results, determine difference between R's implementation and user-generated methods.
+Finally, the last possible addition to this project would be to compare the pre-made functions used in this project with similar self-implemented versions. Initially, we tried implementing the Naive-Bayes classifier as well as several methods that pertained to the PCA process (mainly the functions that would determine the transpose and covariance matrices). However, as mentioned in earlier sections, these functions actually contained many errors and required lots of time to implement correctly (for project legacy, these are attached to the end of this paper). Thus, it might be a worthwhile endeavor to compare the accuracy of these two methods and, if they don't output similar results, determine difference between R's implementation and user-generated methods.
 
 % section discussion (end)
 
