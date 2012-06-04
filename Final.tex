@@ -52,6 +52,9 @@
 %\pdftrue
 %\fi
 
+% For the appendix, inserting the R files verbatim
+\usepackage{verbatim}
+
 \ifpdf
 \usepackage[pdftex]{graphicx}
 \else
@@ -154,7 +157,8 @@ Note that the component values computed using PCA are random variables due to th
 
 For this project, we will be modeling the component values under a \textbf{Gaussian} or \textbf{normal distribution}. As described above, the relative clustering of values for a particular component suggests the use of a normal distribution model ($X \sim N(\mu, \sigma^2)$). With variable component values related to each digit, there will be multiple normal distribution models with the mean ($\mu$) and standard deviation ($\sigma$) determined from the top chosen component values. Essentially, these values will be computed using the methods defined in the previous PCA section. 
 
-Also, we will be using these probabilities in conjunction with the \textbf{Naive Bayes Classifier}. Fundamentally, the Naive Bayes model follows traditional probability theory, relying on Bayes' rule to determine the actual probabilities of certain events. Under this rule, the probability of a certain event X occurring based on some feature x is defined to be
+Also, we will be using these probabilities in conjunction with the \textbf{Naive Bayes Classifier} \cite{bayes}
+. Fundamentally, the Naive Bayes model follows traditional probability theory, relying on Bayes' rule to determine the actual probabilities of certain events. Under this rule, the probability of a certain event X occurring based on some feature x is defined to be
 
 $$p(X | x_1, \ldots, x_n) = \frac{p(x_1, \ldots, x_n | X) * p(X)}{p(x_1, \ldots, x_n)}$$
 
@@ -204,70 +208,70 @@ In the testing portion of the experiment, we again used Python to extract the te
 \subsection{Implementation}
 \label{subsec:narrative}
 
-TODO:
-\begin{itemize}
-    \item Talk about number of components chosen and tests with different numbers
-    \item Talk about number of images used for test and training
-    \item Talk about collections (list, data.frame(), matrix) and various techniques used to transform collections so that functions could spit out correct result
-    \item Talk about plots and results that needed to be stored (e.g. variables used, transitional data, final data)
-\end{itemize}
+We used a variety of R data structures and routines for our implementation, among those the \emph{matrix}, \emph{vector}, and \emph{data frame} types, which are used for the linear algebraic variables when working with PCA. These data types are optimized in R for this purpose, which made the PCA routine itself run very quickly despite the large number of features being considered. Using these data types also made it easy to use the transpose of the matrix simply by specifying \emph{byrow}, for example.
 
+As stated in the previous section, we used 9,900 images to train and 100 to test. After implementing the Naive Bayes learner to perform the classification, it was still an open question of how many principal components we could select and still obtain accurate results. We decided to pick a variety of numbers and compare the accuracies on the same training/testing set. 
+
+After we accumulated the results, we created a series of plots so we could visualize the data as well as the principal components, which would give us insight into how the classifier would behave as we added principal components. We were able to \emph{vectors} as input into R's \emph{plot} routine for plotting individual components. Additionally, we used the \emph{jpeg} library \cite{writejpeg}
+ in order to visualize components (as an image); these involved normalizing the values of a \emph{matrix} so that it is between 0 and 1, and then passing it into the \emph{writeJPEG} routine which outputs an image. This made it easy to visualize the results of our PCA.
 
 \subsection{Results Interpretation/Analysis}
 \label{subsec:interpretation}
 
-TODO:
-\begin{itemize}
-    \item Talk about overall results (what did we see, what didn't we see, why did we get the rates with these images, etc.)
-    \item Talk about patterns and relationship between components used and total image accuracy rate
-    \item Talk about possible factors for wrongly predicted images (features, patterns, etc.)
-    \item Talk about other significant factors or trends noticable in distributions, PCA process, etc.
-\end{itemize}
+After classifying digits using a variety of features, the results are shown in the table below.
 
-\subsection{Plots and Tables}
+\begin{center}
+    \begin{tabular}{| l | r |}
+        \hline
+        \textbf{Experiment} & \textbf{Accuracy} \\ \hline
+        PCA, 784 features & 69\% \\ \hline
+        PCA, 100 features & 92\% \\ \hline
+        PCA, 50 features & 93\% \\ \hline
+        PCA, 10 features & 86\% \\ \hline
+        No PCA (784) & 65\% \\ \hline
+    \end{tabular}
+\end{center}
+
+We saw that the accuracy was highest at a relatively small number of features, and then gradually fell off as we increase the features. For comparison, not doing PCA at all gave us roughly 65\% accuracy, which is better than randomly guessing a number but still not quite ideal. Intuitively, we believe that the accuracy is with relatively few features for this reason: if we don't use PCA at all, we're looking at every single pixel, but virtually all images that we're trying to classify won't match exactly to any of the computed number models this way. We're ``overfitting" by over-penalizing differences in shape; if we reduce the number of features used via PCA, then we look instead at the overall shape of the digit. This is a more accurate way of thinking about classification since a given number, say a 7, will have a distinctive shape despite nuanced variations due to individuals' handwriting. 
+
+\subsection{Plots}
 \label{subsec:plots}
 
-TODO:
-\begin{itemize}
-    \item Include cumulative component percentage plot and briefly talk about component part of PCA
-    \item Include PCA Component Plot and briefly talk about component part of PCA
-    \item Include two-dimensional plot of data using two components (????) and explain results using plot
-    \item Include table of Prediction Accuracy vs. Components Used and explain results (???)
-\end{itemize}
+The optimal number of features to use appears to be roughly 50 (about $6.4\%$ of the original $784$). Looking at the number of features vs. classifier accuracy (see the Figure 3), the accuracy jumps up for the first few features and then slowly goes down as more are added. The accuracy decreases even more at about 350 features, taking a steeper descent; this seems to be a significant point of overfitting, where the small differences being penalized too harshly. If we stick to the optimal number, the classifier gives an accuracy rate of about $93\%$. This was surprisingly good, given the complex nature of the problem and the relatively simply approach that we've used. 
 
-\begin{figure} % PC Figure
+\begin{figure*} % PC Figure
     \centering
-    \begin{subfigure}[b]{0.07\textwidth}
+    \begin{subfigure}[b]{0.1\textwidth}
             \centering
             \includegraphics[width=\textwidth]{figs/pc1.jpg}
             \caption{PC1}
             \label{fig:pc1}
     \end{subfigure}
-    \begin{subfigure}[b]{0.07\textwidth}
+    \begin{subfigure}[b]{0.1\textwidth}
             \centering
             \includegraphics[width=\textwidth]{figs/pc2.jpg}
             \caption{PC2}
             \label{fig:pc2}
     \end{subfigure}
-    \begin{subfigure}[b]{0.07\textwidth}
+    \begin{subfigure}[b]{0.1\textwidth}
             \centering
             \includegraphics[width=\textwidth]{figs/pc3.jpg}
             \caption{PC3}
             \label{fig:pc3}
     \end{subfigure}
-    \begin{subfigure}[b]{0.07\textwidth}
+    \begin{subfigure}[b]{0.1\textwidth}
             \centering
             \includegraphics[width=\textwidth]{figs/pc4.jpg}
             \caption{PC4}
             \label{fig:pc4}
     \end{subfigure}
-    \begin{subfigure}[b]{0.07\textwidth}
+    \begin{subfigure}[b]{0.1\textwidth}
             \centering
             \includegraphics[width=\textwidth]{figs/pc5.jpg}
             \caption{PC5}
             \label{fig:pc5}
     \end{subfigure}
-    \begin{subfigure}[b]{0.07\textwidth}
+    \begin{subfigure}[b]{0.1\textwidth}
             \centering
             \includegraphics[width=\textwidth]{figs/pc6.jpg}
             \caption{PC6}
@@ -275,21 +279,21 @@ TODO:
     \end{subfigure}
     \label{fig:pcs}
     \caption{Principal components of the set of threes.}
-\end{figure}
-\begin{figure}
+\end{figure*}
+\begin{figure*}
     \centering
-    \includegraphics[width=0.5\textwidth]{figs/PCAComponentPlot.pdf}
+    \includegraphics{PCAComponentPlot.pdf}
     \caption{(Left) Plot of images' first two principal components. (Right) Plot of images' two arbitrary pixel values}
     \label{fig:pcaplot}
-\end{figure}    
+\end{figure*}
+\begin{figure*}
+    \centering
+    \includegraphics{figs/accuracyvsfeatures.pdf}
+    \caption{Accuracy vs. number of features used in classification}
+\end{figure*}
 % section results (end)
 
-\section{Discussion} % (fold)
-\label{sec:discussion}
-\cite{bayes}
-
 \section{Discussion}
-
 \subsection{Procedure Evaluation}
 \label{subsec:eval}
 
@@ -301,6 +305,12 @@ The only limitations of this entire procedure dealt with the properties of the e
 \label{subsec:comparison}
 
 Compared to our expectations made from the start of this project, the results obtained from this project were slightly better. With the general knowledge that the Naive-Bayes classifier could predict fairly well due to its elimination of high-dimensionality properties and simple probability mapping, we had assumed that our method could predict a maximum of 80-85\% of the images regardless of the number of components used. However, as observed from the results, our prediction range was comparably off as the percentage range varied considerably depending on the number of components used. For example, when using the first 50 and 100 components, the accuracy percentage was respectively 93\% and 92\%, both of which were a little higher than our maximum prediction rate. Conversely, when using zero or all 784 components, the accuracy percentage was around 66\%, a rate considerably worse than our initial guess.
+
+\begin{figure*}
+    \centering
+    \includegraphics[scale=0.35]{CmptPctPlot.png}
+    \caption{Cumulative Principal Component Numbers vs. Total Percent of Data}
+\end{figure*}
 
 The difference in findings also pertained to comparisons with other results obtained from similar PCA-applied Naive-Bayes classification. When compared to the STAT391 hand-writing classification model (discussed in-class), our procedure did a little better all-around as we were able to accurately predict more images. From Hil Lyons, we found that our resulted modeled the general pattern obtained by his results (with the maximum accuracy values obtained using ~100 components). However, our accuracy numbers were slightly higher, with our model accurately predicting 2-10\% more images than the model. Also, when compared to other groups' findings, we found that the accuracy rating model was again similar, with the maximum overall accuracy topped around 100 features. In addition, the accuracy rating quantity for these ranges modeled similarly to our results, loosely modeling a quadratic function with a maximum accuracy rating of around 92\%. The only difference between our results and their results were the accuracy percentages using extreme number of features. We found that our minimum accuracy values were higher than those observed by other groups, a range that was between 12\% at the lowest and 43\% at the highest. These differences in overall accuracy values could be attributed to two features: one being the limited training data that was used (only used a subset of the whole MNIST images) and the other being the use of R's built-in libraries.
 
@@ -317,5 +327,9 @@ Finally, the last possible addition to this project would be to compare the pre-
 
 \bibliographystyle{plain}
 \bibliography{stat}
+
+\onecolumn
+\appendix
+\input{appendix.tex}
 
 \end{document}
