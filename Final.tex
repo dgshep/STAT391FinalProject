@@ -213,7 +213,7 @@ We used a variety of R data structures and routines for our implementation, amon
 As stated in the previous section, we used 9,900 images to train and 100 to test. After implementing the Naive Bayes learner to perform the classification, it was still an open question of how many principal components we could select and still obtain accurate results. We decided to pick a variety of numbers and compare the accuracies on the same training/testing set. 
 
 After we accumulated the results, we created a series of plots so we could visualize the data as well as the principal components, which would give us insight into how the classifier would behave as we added principal components. We were able to \emph{vectors} as input into R's \emph{plot} routine for plotting individual components. Additionally, we used the \emph{jpeg} library \cite{writejpeg}
- in order to visualize components (as an image); these involved normalizing the values of a \emph{matrix} so that it is between 0 and 1, and then passing it into the \emph{writeJPEG} routine which outputs an image. This made it easy to visualize the results of our PCA.
+ in order to visualize components (as an image); these involved normalizing the values of a \emph{matrix} so that it is between 0 and 1, and then passing it into the \emph{writeJPEG} routine which outputs an image. This made it easy to visualize the results of our PCA. As an example, Figure 1 uses \emph{writeJPEG} in order to visualize the first six principal components of the 3s. It's easy to tell at a glance from just the first two that the components represent the general shape of the three, with some variation on how the digit is slanted (we believe this to be due to left-handed vs. right-handed writers).
 
 \subsection{Results Interpretation/Analysis}
 \label{subsec:interpretation}
@@ -238,6 +238,8 @@ We saw that the accuracy was highest at a relatively small number of features, a
 \label{subsec:plots}
 
 The optimal number of features to use appears to be roughly 50 (about $6.4\%$ of the original $784$). Looking at the number of features vs. classifier accuracy (see the Figure 3), the accuracy jumps up for the first few features and then slowly goes down as more are added. The accuracy decreases even more at about 350 features, taking a steeper descent; this seems to be a significant point of overfitting, where the small differences being penalized too harshly. If we stick to the optimal number, the classifier gives an accuracy rate of about $93\%$. This was surprisingly good, given the complex nature of the problem and the relatively simply approach that we've used. 
+
+Figure 2 gives two samples of how the principal components correlate with each other. On the left, plotting the first two components reveals a considerable amount on how the digits are strucutured, with a clear separation in some cases (e.g., the zeroes and threes). By comparison, principal components 736 and 737 reveal much less. These components are less significant so they capture less of the variance; in particular, they seem to correspond to corner pixel values that don't vary much (if at all). Figure 4 gives a cumulative plot of the distribution of principal components with respect to variance, ordered by most significant. We see that just 10 components are enough to capture over $40\%$ of the variance, and 100 captures over $90\%$. Since few components capture so much variance, intuitively this tells us that there are just a few different ``shapes" that separate each number. 
 
 \begin{figure*} % PC Figure
     \centering
