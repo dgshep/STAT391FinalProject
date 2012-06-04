@@ -1,18 +1,15 @@
-Final.aux
-Final.maf
-Final.mtc
-Final.mtc0
+*.aux
+*.maf
+*.mtc
+*.mtc0
 Final.pdf
+credits.pdf
 .Rapp.history
 .RData
 .Rhistory
-Final.log
+*.log
 *~
-Final.bbl
-Final.blg
-Final.out
+*.bbl
+*.blg
+*.out
 
-
-
-Final.blg
-Final.bbl
